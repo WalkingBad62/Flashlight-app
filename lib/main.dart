@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:torch_light/torch_light.dart';
 
@@ -33,6 +35,8 @@ class FlashlightPage extends StatefulWidget {
 class _FlashlightPageState extends State<FlashlightPage> {
   bool _isFlashlightOn = false;
   bool _isSupported = true;
+  int? _autoOffMinutes = 5;
+  Timer? _autoOffTimer;
 
   @override
   void initState() {
@@ -53,6 +57,61 @@ class _FlashlightPageState extends State<FlashlightPage> {
     }
   }
 
+  void _scheduleAutoOffTimer() {
+    _autoOffTimer?.cancel();
+
+    if (!_isFlashlightOn || _autoOffMinutes == null) {
+      return;
+    }
+
+    _autoOffTimer = Timer(Duration(minutes: _autoOffMinutes!), () async {
+      if (!mounted || !_isFlashlightOn) {
+        return;
+      }
+
+      try {
+        await TorchLight.disableTorch();
+      } catch (_) {
+        // Ignore torch shutdown errors when the timer expires.
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _isFlashlightOn = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Flashlight turned off automatically'),
+        ),
+      );
+    });
+  }
+
+  Future<void> _turnOffFlashlight() async {
+    _autoOffTimer?.cancel();
+
+    if (!_isFlashlightOn) {
+      return;
+    }
+
+    try {
+      await TorchLight.disableTorch();
+      if (!mounted) return;
+      setState(() {
+        _isFlashlightOn = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
   Future<void> _toggleFlashlight() async {
     if (!_isSupported) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -65,14 +124,15 @@ class _FlashlightPageState extends State<FlashlightPage> {
 
     try {
       if (_isFlashlightOn) {
-        await TorchLight.disableTorch();
+        await _turnOffFlashlight();
       } else {
         await TorchLight.enableTorch();
+        if (!mounted) return;
+        setState(() {
+          _isFlashlightOn = true;
+        });
+        _scheduleAutoOffTimer();
       }
-      if (!mounted) return;
-      setState(() {
-        _isFlashlightOn = !_isFlashlightOn;
-      });
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -83,6 +143,7 @@ class _FlashlightPageState extends State<FlashlightPage> {
 
   @override
   void dispose() {
+    _autoOffTimer?.cancel();
     TorchLight.disableTorch();
     super.dispose();
   }
@@ -213,6 +274,90 @@ class _FlashlightPageState extends State<FlashlightPage> {
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: const Color(0xFFD1D5DB),
                       ),
+                ),
+                const SizedBox(height: 22),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF111827).withValues(alpha: 0.78),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: const Color(0xFF374151).withValues(alpha: 0.7),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Auto-off timer',
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Flash on thakle selected time shesh hole app nijer theke light off kore dibe.',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: const Color(0xFFCBD5E1),
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<int?>(
+                        value: _autoOffMinutes,
+                        dropdownColor: const Color(0xFF111827),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: const Color(0xFF1F2937),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 14,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        items: const [
+                          DropdownMenuItem<int?>(
+                            value: null,
+                            child: Text('Off'),
+                          ),
+                          DropdownMenuItem<int?>(
+                            value: 1,
+                            child: Text('1 minute'),
+                          ),
+                          DropdownMenuItem<int?>(
+                            value: 3,
+                            child: Text('3 minutes'),
+                          ),
+                          DropdownMenuItem<int?>(
+                            value: 5,
+                            child: Text('5 minutes'),
+                          ),
+                          DropdownMenuItem<int?>(
+                            value: 10,
+                            child: Text('10 minutes'),
+                          ),
+                          DropdownMenuItem<int?>(
+                            value: 15,
+                            child: Text('15 minutes'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (!mounted) return;
+                          setState(() {
+                            _autoOffMinutes = value;
+                          });
+                          if (_isFlashlightOn) {
+                            _scheduleAutoOffTimer();
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
                 const Spacer(),
                 SizedBox(

@@ -6,6 +6,7 @@ A simple Flutter flashlight (torch light) app that uses your device's camera fla
 
 - ✨ Simple and intuitive UI
 - 💡 Turn flashlight on/off with a single tap
+- ⏱️ Auto-off timer for battery saving
 - 📱 Works on both Android and iOS devices
 - ⚡ Fast and responsive
 
