@@ -166,242 +166,270 @@ class _FlashlightPageState extends State<FlashlightPage> {
         duration: const Duration(milliseconds: 350),
         decoration: BoxDecoration(gradient: backgroundGradient),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Flashlight',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final shortestSide = MediaQuery.of(context).size.shortestSide;
+              final torchSize = shortestSide < 360 ? 220.0 : 260.0;
+              final innerSize = shortestSide < 360 ? 160.0 : 190.0;
+              final iconSize = shortestSide < 360 ? 76.0 : 92.0;
+
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Flashlight',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w800,
+                                    ),
                               ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Quick torch control',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: const Color(0xFF9CA3AF)),
-                        ),
-                      ],
-                    ),
-                    _StatusPill(
-                      label: _isSupported ? 'READY' : 'NO TORCH',
-                      color: _isSupported
-                          ? const Color(0xFF34D399)
-                          : const Color(0xFFF87171),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 350),
-                  width: 260,
-                  height: 260,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: glowColor.withValues(alpha: 0.16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: glowColor.withValues(
-                          alpha: _isFlashlightOn ? 0.45 : 0.12,
-                        ),
-                        blurRadius: _isFlashlightOn ? 70 : 28,
-                        spreadRadius: _isFlashlightOn ? 18 : 4,
-                      ),
-                    ],
-                    border: Border.all(
-                      color: glowColor.withValues(alpha: 0.45),
-                      width: 1.5,
-                    ),
-                  ),
-                  child: Center(
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 250),
-                      width: 190,
-                      height: 190,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _isFlashlightOn
-                            ? const Color(0xFFFFF3B0)
-                            : const Color(0xFF1F2937),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.28),
-                            blurRadius: 24,
-                            offset: const Offset(0, 16),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Quick torch control',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: const Color(0xFF9CA3AF)),
+                              ),
+                            ],
+                          ),
+                          _StatusPill(
+                            label: _isSupported ? 'READY' : 'NO TORCH',
+                            color: _isSupported
+                                ? const Color(0xFF34D399)
+                                : const Color(0xFFF87171),
                           ),
                         ],
                       ),
-                      child: Icon(
-                        _isFlashlightOn
-                            ? Icons.flashlight_on
-                            : Icons.flashlight_off,
-                        size: 92,
-                        color: _isFlashlightOn
-                            ? const Color(0xFFB45309)
-                            : const Color(0xFF9CA3AF),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 36),
-                Text(
-                  _isFlashlightOn ? 'LIGHT IS ON' : 'LIGHT IS OFF',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
-                      ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  _isFlashlightOn
-                      ? 'Tap the button to switch it off.'
-                      : 'Tap the button to brighten things up.',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: const Color(0xFFD1D5DB),
-                      ),
-                ),
-                const SizedBox(height: 22),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF111827).withValues(alpha: 0.78),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: const Color(0xFF374151).withValues(alpha: 0.7),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Auto-off timer',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w800,
+                      SizedBox(height: shortestSide < 360 ? 28 : 38),
+                      Center(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 350),
+                          width: torchSize,
+                          height: torchSize,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: glowColor.withValues(alpha: 0.16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: glowColor.withValues(
+                                  alpha: _isFlashlightOn ? 0.45 : 0.12,
                                 ),
+                                blurRadius: _isFlashlightOn ? 70 : 28,
+                                spreadRadius: _isFlashlightOn ? 18 : 4,
+                              ),
+                            ],
+                            border: Border.all(
+                              color: glowColor.withValues(alpha: 0.45),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Center(
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 250),
+                              width: innerSize,
+                              height: innerSize,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _isFlashlightOn
+                                    ? const Color(0xFFFFF3B0)
+                                    : const Color(0xFF1F2937),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.28),
+                                    blurRadius: 24,
+                                    offset: const Offset(0, 16),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                _isFlashlightOn
+                                    ? Icons.flashlight_on
+                                    : Icons.flashlight_off,
+                                size: iconSize,
+                                color: _isFlashlightOn
+                                    ? const Color(0xFFB45309)
+                                    : const Color(0xFF9CA3AF),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 28),
                       Text(
-                        'Flash on thakle selected time shesh hole app nijer theke light off kore dibe.',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: const Color(0xFFCBD5E1),
+                        _isFlashlightOn ? 'LIGHT IS ON' : 'LIGHT IS OFF',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0,
                             ),
                       ),
-                      const SizedBox(height: 12),
-                      DropdownButtonFormField<int?>(
-                        value: _autoOffMinutes,
-                        dropdownColor: const Color(0xFF111827),
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: const Color(0xFF1F2937),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 14,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide.none,
+                      const SizedBox(height: 8),
+                      Text(
+                        _isFlashlightOn
+                            ? 'Tap the button to switch it off.'
+                            : 'Tap the button to brighten things up.',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: const Color(0xFFD1D5DB),
+                            ),
+                      ),
+                      const SizedBox(height: 22),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color:
+                              const Color(0xFF111827).withValues(alpha: 0.78),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color:
+                                const Color(0xFF374151).withValues(alpha: 0.7),
                           ),
                         ),
-                        items: const [
-                          DropdownMenuItem<int?>(
-                            value: null,
-                            child: Text('Off'),
-                          ),
-                          DropdownMenuItem<int?>(
-                            value: 1,
-                            child: Text('1 minute'),
-                          ),
-                          DropdownMenuItem<int?>(
-                            value: 3,
-                            child: Text('3 minutes'),
-                          ),
-                          DropdownMenuItem<int?>(
-                            value: 5,
-                            child: Text('5 minutes'),
-                          ),
-                          DropdownMenuItem<int?>(
-                            value: 10,
-                            child: Text('10 minutes'),
-                          ),
-                          DropdownMenuItem<int?>(
-                            value: 15,
-                            child: Text('15 minutes'),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          if (!mounted) return;
-                          setState(() {
-                            _autoOffMinutes = value;
-                          });
-                          if (_isFlashlightOn) {
-                            _scheduleAutoOffTimer();
-                          }
-                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Auto-off timer',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'Flash on thakle selected time shesh hole app nijer theke light off kore dibe.',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: const Color(0xFFCBD5E1),
+                                  ),
+                            ),
+                            const SizedBox(height: 12),
+                            DropdownButtonFormField<int?>(
+                              value: _autoOffMinutes,
+                              isExpanded: true,
+                              dropdownColor: const Color(0xFF111827),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: const Color(0xFF1F2937),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              items: const [
+                                DropdownMenuItem<int?>(
+                                  value: null,
+                                  child: Text('Off'),
+                                ),
+                                DropdownMenuItem<int?>(
+                                  value: 1,
+                                  child: Text('1 minute'),
+                                ),
+                                DropdownMenuItem<int?>(
+                                  value: 3,
+                                  child: Text('3 minutes'),
+                                ),
+                                DropdownMenuItem<int?>(
+                                  value: 5,
+                                  child: Text('5 minutes'),
+                                ),
+                                DropdownMenuItem<int?>(
+                                  value: 10,
+                                  child: Text('10 minutes'),
+                                ),
+                                DropdownMenuItem<int?>(
+                                  value: 15,
+                                  child: Text('15 minutes'),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                if (!mounted) return;
+                                setState(() {
+                                  _autoOffMinutes = value;
+                                });
+                                if (_isFlashlightOn) {
+                                  _scheduleAutoOffTimer();
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ),
+                      const SizedBox(height: 22),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 64,
+                        child: FilledButton.icon(
+                          onPressed: _isSupported ? _toggleFlashlight : null,
+                          icon: Icon(
+                            _isFlashlightOn
+                                ? Icons.power_settings_new
+                                : Icons.bolt,
+                          ),
+                          label: Text(_isFlashlightOn ? 'Turn Off' : 'Turn On'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: _isFlashlightOn
+                                ? const Color(0xFFEF4444)
+                                : const Color(0xFFFFC857),
+                            foregroundColor: _isFlashlightOn
+                                ? Colors.white
+                                : const Color(0xFF111827),
+                            disabledBackgroundColor: const Color(0xFF374151),
+                            disabledForegroundColor: const Color(0xFF9CA3AF),
+                            textStyle: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (!_isSupported)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18),
+                          child: Text(
+                            'Flashlight is not available on this device.',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: const Color(0xFFFCA5A5)),
+                          ),
+                        ),
                     ],
                   ),
                 ),
-                const Spacer(),
-                SizedBox(
-                  width: double.infinity,
-                  height: 64,
-                  child: FilledButton.icon(
-                    onPressed: _isSupported ? _toggleFlashlight : null,
-                    icon: Icon(
-                      _isFlashlightOn ? Icons.power_settings_new : Icons.bolt,
-                    ),
-                    label: Text(_isFlashlightOn ? 'Turn Off' : 'Turn On'),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: _isFlashlightOn
-                          ? const Color(0xFFEF4444)
-                          : const Color(0xFFFFC857),
-                      foregroundColor: _isFlashlightOn
-                          ? Colors.white
-                          : const Color(0xFF111827),
-                      disabledBackgroundColor: const Color(0xFF374151),
-                      disabledForegroundColor: const Color(0xFF9CA3AF),
-                      textStyle: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-                  ),
-                ),
-                if (!_isSupported)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 18),
-                    child: Text(
-                      'Flashlight is not available on this device.',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: const Color(0xFFFCA5A5)),
-                    ),
-                  ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),
