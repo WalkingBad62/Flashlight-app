@@ -218,53 +218,62 @@ class _FlashlightPageState extends State<FlashlightPage> {
                       ),
                       SizedBox(height: shortestSide < 360 ? 28 : 38),
                       Center(
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 350),
-                          width: torchSize,
-                          height: torchSize,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: glowColor.withValues(alpha: 0.16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: glowColor.withValues(
-                                  alpha: _isFlashlightOn ? 0.45 : 0.12,
-                                ),
-                                blurRadius: _isFlashlightOn ? 70 : 28,
-                                spreadRadius: _isFlashlightOn ? 18 : 4,
-                              ),
-                            ],
-                            border: Border.all(
-                              color: glowColor.withValues(alpha: 0.45),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Center(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _isSupported ? _toggleFlashlight : null,
+                            customBorder: const CircleBorder(),
                             child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 250),
-                              width: innerSize,
-                              height: innerSize,
+                              duration: const Duration(milliseconds: 350),
+                              width: torchSize,
+                              height: torchSize,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: _isFlashlightOn
-                                    ? const Color(0xFFFFF3B0)
-                                    : const Color(0xFF1F2937),
+                                color: glowColor.withValues(alpha: 0.16),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.28),
-                                    blurRadius: 24,
-                                    offset: const Offset(0, 16),
+                                    color: glowColor.withValues(
+                                      alpha: _isFlashlightOn ? 0.45 : 0.12,
+                                    ),
+                                    blurRadius: _isFlashlightOn ? 70 : 28,
+                                    spreadRadius: _isFlashlightOn ? 18 : 4,
                                   ),
                                 ],
+                                border: Border.all(
+                                  color: glowColor.withValues(alpha: 0.45),
+                                  width: 1.5,
+                                ),
                               ),
-                              child: Icon(
-                                _isFlashlightOn
-                                    ? Icons.flashlight_on
-                                    : Icons.flashlight_off,
-                                size: iconSize,
-                                color: _isFlashlightOn
-                                    ? const Color(0xFFB45309)
-                                    : const Color(0xFF9CA3AF),
+                              child: Center(
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 250),
+                                  width: innerSize,
+                                  height: innerSize,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _isFlashlightOn
+                                        ? const Color(0xFFFFF3B0)
+                                        : const Color(0xFF1F2937),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.28,
+                                        ),
+                                        blurRadius: 24,
+                                        offset: const Offset(0, 16),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    _isFlashlightOn
+                                        ? Icons.flashlight_on
+                                        : Icons.flashlight_off,
+                                    size: iconSize,
+                                    color: _isFlashlightOn
+                                        ? const Color(0xFFB45309)
+                                        : const Color(0xFF9CA3AF),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
